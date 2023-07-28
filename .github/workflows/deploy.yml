@@ -1,0 +1,35 @@
+name: Build and Deploy WordPress Application
+
+on:
+  workflow_dispatch: {}
+  #push:
+  #  branches: [ main ]
+  #pull_request:
+
+env:
+  applicationfolder: wordpress
+  AWS_REGION: us-east-1
+  S3BUCKET:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Dev
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.IAMROLE_GITHUB }}
+        role-session-name: GitHub-Action-Role
+        #aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        #aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    - run: |
+        echo "Deploying branch ${{ env.GITHUB_REF }} to ${{ github.event.inputs.environment }}"
+        commit_hash=`git rev-parse HEAD`
+        aws deploy create-deployment --application-name CodeDeployWPApp --deployment-group-name CodeDeployWPAppGroup --github-location repository=$GITHUB_REPOSITORY,commitId=$commit_hash --ignore-application-stop-failures
