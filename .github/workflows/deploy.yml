@@ -1,4 +1,4 @@
-name: Build and Deploy WordPress Application
+name: Deploy WordPress App
 
 on:
   workflow_dispatch: {}
