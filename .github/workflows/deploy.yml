@@ -26,8 +26,6 @@ jobs:
       with:
         role-to-assume: arn:aws:iam::478742606598:role/WPGitHubActions-AssumeRoleWithAction
         role-session-name: GitHub-Action-Role
-        #aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        #aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
     - run: |
         echo "Deploying branch ${{ env.GITHUB_REF }} to ${{ github.event.inputs.environment }}"
