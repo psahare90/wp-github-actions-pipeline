@@ -28,7 +28,8 @@ jobs:
         role-to-assume: ${{ secrets.GITHUBOIDC_ROLE }}
         role-session-name: GitHub-Action-Role
         aws-region: ${{ env.AWS_REGION }}
-    if: ${{ push.branches == 'main' }}
+    - name: Run Deployment for main branch
+      if: ${{ github.ref == 'refs/heads/main' }}
       run: |
         echo "Deploying branch ${{ env.GITHUB_REF }} to ${{ github.event.inputs.environment }}"
         commit_hash=`git rev-parse HEAD`
