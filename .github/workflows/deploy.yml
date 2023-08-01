@@ -31,7 +31,7 @@ jobs:
 
     if: ${{ push.branches == 'main' }}
     - name: Run Deployment for main branch
-    - run: |
+      run: |
         echo "Deploying branch ${{ env.GITHUB_REF }} to ${{ github.event.inputs.environment }}"
         commit_hash=`git rev-parse HEAD`
         aws deploy create-deployment --application-name CodeDeployWPApp --deployment-group-name CodeDeployWPAppGroup --github-location repository=$GITHUB_REPOSITORY,commitId=$commit_hash --ignore-application-stop-failures
