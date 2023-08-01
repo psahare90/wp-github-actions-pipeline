@@ -3,9 +3,9 @@ name: Deploy WordPress App
 on:
   #workflow_dispatch: {}
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [ main, develop, staging ]
+  #pull_request:
+  #  branches: [ main ]
 
 env:
   applicationfolder: wordpress
@@ -32,5 +32,17 @@ jobs:
       if: ${{ github.ref == 'refs/heads/main' }}
       run: |
         echo "Deploying branch ${{ env.GITHUB_REF }} to ${{ github.event.inputs.environment }}"
+        commit_hash=`git rev-parse HEAD`
+        aws deploy create-deployment --application-name CodeDeployWPApp --deployment-group-name CodeDeployWPAppGroup --github-location repository=$GITHUB_REPOSITORY,commitId=$commit_hash --ignore-application-stop-failures
+    - name: Run Deployment for develop branch
+      if: ${{ github.ref == 'refs/heads/develop' }}
+      run: |
+        echo "Deploying branch ${{ github.ref }} to ${{ github.event.inputs.environment }}"
+        commit_hash=`git rev-parse HEAD`
+        aws deploy create-deployment --application-name CodeDeployWPApp --deployment-group-name CodeDeployWPAppGroup --github-location repository=$GITHUB_REPOSITORY,commitId=$commit_hash --ignore-application-stop-failures
+    - name: Run Deployment for staging branch
+      if: ${{ github.ref == 'refs/heads/staging' }}
+      run: |
+        echo "Deploying branch ${{ github.ref }} to ${{ github.event.inputs.environment }}"
         commit_hash=`git rev-parse HEAD`
         aws deploy create-deployment --application-name CodeDeployWPApp --deployment-group-name CodeDeployWPAppGroup --github-location repository=$GITHUB_REPOSITORY,commitId=$commit_hash --ignore-application-stop-failures
